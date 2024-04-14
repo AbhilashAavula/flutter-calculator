@@ -1,0 +1,176 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(CalculatorApp());
+}
+
+class CalculatorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Calculator',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: CalculatorHomePage(),
+    );
+  }
+}
+
+class CalculatorHomePage extends StatefulWidget {
+  @override
+  _CalculatorHomePageState createState() => _CalculatorHomePageState();
+}
+
+class _CalculatorHomePageState extends State<CalculatorHomePage> {
+  String _output = '0';
+  String _outputHistory = '';
+  double _num1 = 0;
+  double _num2 = 0;
+  String _operand = '';
+
+  void buttonPressed(String buttonText) {
+    if (buttonText == 'C') {
+      _output = '0';
+      _outputHistory = '';
+      _num1 = 0;
+      _num2 = 0;
+      _operand = '';
+    } else if (buttonText == '+' || buttonText == '-' || buttonText == '*' || buttonText == '/') {
+      _num1 = double.parse(_output);
+      _operand = buttonText;
+      _outputHistory = _output + _operand;
+      _output = '0';
+    } else if (buttonText == '.') {
+      if (!_output.contains('.')) {
+        _output += buttonText;
+      }
+    } else if (buttonText == '=') {
+      _num2 = double.parse(_output);
+      if (_operand == '+') {
+        _output = (_num1 + _num2).toString();
+      }
+      if (_operand == '-') {
+        _output = (_num1 - _num2).toString();
+      }
+      if (_operand == '*') {
+        _output = (_num1 * _num2).toString();
+      }
+      if (_operand == '/') {
+        _output = (_num1 / _num2).toString();
+      }
+      _outputHistory = '';
+      _num1 = 0;
+      _num2 = 0;
+      _operand = '';
+    } else {
+      _output == '0' ? _output = buttonText : _output += buttonText;
+    }
+
+    setState(() {
+      _output;
+      _outputHistory;
+    });
+  }
+
+  Widget buildButton(String buttonText) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: FlatButton(
+          onPressed: () => buttonPressed(buttonText),
+          child: Text(
+            buttonText,
+            style: TextStyle(
+              fontSize: 24.0,
+            ),
+          ),
+          color: Colors.grey[300],
+          padding: EdgeInsets.all(20.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Calculator'),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 24.0),
+            child: Text(
+              _outputHistory,
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 48.0),
+            child: Text(
+              _output,
+              style: TextStyle(
+                fontSize: 48.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Divider(),
+          ),
+          Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  buildButton('7'),
+                  buildButton('8'),
+                  buildButton('9'),
+                  buildButton('/'),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  buildButton('4'),
+                  buildButton('5'),
+                  buildButton('6'),
+                  buildButton('*'),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  buildButton('1'),
+                  buildButton('2'),
+                  buildButton('3'),
+                  buildButton('-'),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  buildButton('.'),
+                  buildButton('0'),
+                  buildButton('C'),
+                  buildButton('+'),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  buildButton('='),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
